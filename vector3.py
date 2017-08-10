@@ -52,3 +52,6 @@ class Vector3:
         return Vector3(self.__x * other.__x,
                        self.__y * other.__y,
                        self.__z * other.__z)
+
+    def reflect(self, normal):
+        return self - 2.0 * normal.dot(self) * normal

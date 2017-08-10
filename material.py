@@ -17,3 +17,11 @@ class Material:
     @property
     def emission_color(self):
         return self.__emission_color
+
+    @property
+    def transparency(self):
+        return self.__transparency
+
+    @property
+    def is_diffuse(self):
+        return self.__reflectivity == 0.0 and self.__transparency == 0.0

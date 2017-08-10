@@ -11,3 +11,7 @@ class Ray:
     @property
     def direction(self):
         return self.__direction
+
+    @property
+    def current_ior(self):
+        return self.__current_ior
