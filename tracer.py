@@ -19,51 +19,51 @@ def trace(ray, scene, depth):
             hit_t, hit_point, hit_normal = intersection
 
     if hit_object is None:
-        return Vector3()  # bg color
+        return Vector3(2, 2, 2)  # bg color
 
     traced_color = Vector3()
-    bias = 0  # 1e-4
-    biased_point = hit_point + hit_normal * bias
+    bias = 1e-4
 
     inside = False
     if ray.direction.dot(hit_normal) > 0.0:
         inside = True
         hit_normal = -1 * hit_normal
 
-    if not object.material.is_diffuse and depth < MAX_RECURSION_DEPTH:
+    if not hit_object.material.is_diffuse and depth < MAX_RECURSION_DEPTH:
         # reflective/refractive object
         facingRatio = -ray.direction.dot(hit_normal)
-        freshnel = mix((1 - facingRatio) ** 3, 1, 0.1)
-        reflection_ray = Ray(biased_point, ray.direction.reflect(hit_normal).normalize())
+        fresnel = mix((1 - facingRatio) ** 3, 1, 0.1)
+        reflection_ray = Ray(hit_point + hit_normal * bias, ray.direction.reflect(hit_normal).normalize())
         reflection = trace(reflection_ray, scene, depth + 1)
         refraction = Vector3()
 
         # transparent?
-        if object.material.transparency > 0:
+        if hit_object.material.transparency > 0:
             eta = ray.current_ior if inside else 1.0 / ray.current_ior
             cos_i = -hit_normal.dot(ray.direction)
             k = 1 - eta ** 2 * (1 - cos_i ** 2)
             refraction_ray_direction = ray.direction * eta + hit_normal * (eta * cos_i - math.sqrt(k))
-            refraction_ray = Ray(biased_point, refraction_ray_direction.normalize())
+            refraction_ray = Ray(hit_point - hit_normal * bias, refraction_ray_direction.normalize())
             refraction = trace(refraction_ray, scene, depth + 1)
 
-        traced_color = ((reflection * freshnel + refraction * (1 - freshnel) * object.material.transparency)
-                        .mul_comp(object.material.surface_color))
+        traced_color = ((reflection * fresnel + refraction * (1 - fresnel) * hit_object.material.transparency)
+                        .mul_comp(hit_object.material.surface_color))
 
     else:
         # diffuse object
-        for light in filter(lambda object: object.is_light, scene):
+        for light in filter(lambda obj: obj.is_light, scene):
             transmission = Vector3(1, 1, 1)
             light_direction = (light.primitive.position - hit_point).normalize()
-            for object in filter(lambda object: object != light, scene):
-                if object.primitive.intersect(Ray(biased_point, light_direction)):
+            for other in filter(lambda obj: obj != light, scene):
+                if other.primitive.intersect(Ray(hit_point + hit_normal * bias, light_direction)):
                     transmission = Vector3()
                     break
-            traced_color = (traced_color +
-                            hit_object.material.surface_color
-                            .mul_comp(transmission)
-                            .mul_comp(light.material.emission_color) *
-                            max(0, hit_normal.dot(light_direction)))
+            traced_color = traced_color + (
+                hit_object.material.surface_color
+                .mul_comp(transmission)
+                .mul_comp(light.material.emission_color) *
+                max(0, hit_normal.dot(light_direction))
+            )
 
     return traced_color
 
