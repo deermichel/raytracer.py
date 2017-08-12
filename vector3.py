@@ -18,7 +18,7 @@ class Vector3:
                        self.__z + other.__z)
 
     def __sub__(self, other):
-        return self + other * -1
+        return self + (-other)
 
     def __mul__(self, factor):
         return Vector3(self.__x * factor,
@@ -26,6 +26,9 @@ class Vector3:
                        self.__z * factor)
 
     __rmul__ = __mul__
+
+    def __neg__(self):
+        return Vector3(-self.__x, -self.__y, -self.__z)
 
     @property
     def length(self):

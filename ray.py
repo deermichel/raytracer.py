@@ -2,7 +2,7 @@ class Ray:
     def __init__(self, origin, direction):
         self.__origin = origin
         self.__direction = direction
-        self.__current_ior = 1.1  # 1.0
+        self.__current_ior = 1.0
 
     @property
     def origin(self):

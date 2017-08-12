@@ -25,3 +25,7 @@ class Material:
     @property
     def is_diffuse(self):
         return self.__reflectivity == 0.0 and self.__transparency == 0.0
+
+    @property
+    def ior(self):
+        return self.__ior
