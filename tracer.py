@@ -64,7 +64,7 @@ def trace(ray, scene, depth):
                 max(0, hit_normal.dot(light_direction))
             )
 
-    return traced_color
+    return traced_color + hit_object.material.emission_color
 
 
 def render(scene, width, height):
