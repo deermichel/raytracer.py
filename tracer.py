@@ -9,7 +9,7 @@ class Tracer:
 
     def trace(self, ray, scene):
         self.__scene = scene
-        return self.__trace_recursively(ray, scene, 0)
+        return self.__trace_recursively(ray, 0)
 
     def __trace_recursively(self, ray, depth):
         hit_object, hit_point, hit_normal = self.__intersect(ray)
@@ -56,7 +56,7 @@ class Tracer:
         facing_ratio = -ray.direction.dot(hit_normal)
         fresnel = self.__mix((1 - facing_ratio) ** 3, 1, 0.1)
         reflection_ray = Ray(hit_point + self.__bias * hit_normal,
-                             ray.direction.refract(hit_normal).normalize())
+                             ray.direction.reflect(hit_normal).normalize())
         reflection = self.__trace_recursively(reflection_ray, depth + 1)
         refraction = Vector3()
 

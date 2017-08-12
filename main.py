@@ -4,6 +4,7 @@
 # based on http://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing
 
 import os
+from camera import Camera
 from material import Material
 from sphere import Sphere
 from renderer import Renderer
@@ -11,8 +12,8 @@ from renderobject import RenderObject
 from vector3 import Vector3
 
 # render settings
-width = 150
-height = 100
+width = 640
+height = 480
 super_sampling = 1
 
 # create demo scene
@@ -24,7 +25,7 @@ ground_mat = Material(surface_color=Vector3(0.2, 0.2, 0.2))
 ground_sphere = Sphere(Vector3(0, -10004, 20), 10000)
 ground_obj = RenderObject(ground_sphere, ground_mat)
 
-mat1 = Material(surface_color=Vector3(1, 0.32, 0.36), reflectivity=1, transparency=0.5)
+mat1 = Material(surface_color=Vector3(1, 0.32, 0.36), reflectivity=1, transparency=0.5, ior=1.1)
 sphere1 = Sphere(Vector3(z=20), 4)
 obj1 = RenderObject(sphere1, mat1)
 
@@ -44,7 +45,8 @@ scene = [ground_obj, obj1, obj2, obj3, obj4, light_obj]
 
 # render
 renderer = Renderer(os.cpu_count())
-image = renderer.render(scene, width, height, super_sampling)
+camera = Camera(Vector3(), 30)
+image = renderer.render(scene, camera, width, height, super_sampling)
 
 # save ppm image
 file = open("output.ppm", "w")
