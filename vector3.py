@@ -55,3 +55,9 @@ class Vector3:
 
     def reflect(self, normal):
         return self - 2.0 * normal.dot(self) * normal
+
+    def refract(self, from_ior, to_ior, normal):
+        eta = to_ior / from_ior
+        cos_i = -normal.dot(self)
+        k = 1 - eta ** 2 * (1 - cos_i ** 2)
+        return self * eta + normal * (eta * cos_i - math.sqrt(k))

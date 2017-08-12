@@ -39,11 +39,10 @@ def trace(ray, scene, depth):
 
         # transparent?
         if hit_object.material.transparency > 0:
-            eta = ray.current_ior if inside else 1.0 / ray.current_ior
-            cos_i = -hit_normal.dot(ray.direction)
-            k = 1 - eta ** 2 * (1 - cos_i ** 2)
-            refraction_ray_direction = ray.direction * eta + hit_normal * (eta * cos_i - math.sqrt(k))
-            refraction_ray = Ray(hit_point - hit_normal * bias, refraction_ray_direction.normalize())
+            from_ior = 1.0 if inside else 1.1
+            to_ior = 1.1 if inside else 1.0
+            refraction_ray = Ray(hit_point - hit_normal * bias,
+                                 ray.direction.refract(from_ior, to_ior, hit_normal).normalize())
             refraction = trace(refraction_ray, scene, depth + 1)
 
         traced_color = ((reflection * fresnel + refraction * (1 - fresnel) * hit_object.material.transparency)
