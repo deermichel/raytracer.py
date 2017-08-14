@@ -38,7 +38,6 @@ class Renderer:
                 self.__total_tiles += 1
 
         # wait and stop workers
-        self.__tiles.join()
         for i in range(self.__threads):
             self.__tiles.put(None)
         for thread in workers:
@@ -72,7 +71,6 @@ class Renderer:
                             sampled_rays += 1
                     rendered_tile[x, y] = sum_color * (1 / sampled_rays)
             self.__rendered_tiles.put((rendered_tile,))
-            self.__tiles.task_done()
             if self.__logging:
                 finished = self.__rendered_tiles.qsize()
                 print("{0}/{1} tiles | {2:.2f}%".format(finished, self.__total_tiles,
