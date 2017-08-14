@@ -3,15 +3,20 @@ from vector3 import Vector3
 
 
 class Tracer:
+    """Main (ray) tracer coordinating the heavy algorithmic work"""
+
     def __init__(self, max_recursion_depth=5, bias=1e-4):
+        """Creates a new tracer"""
         self.__max_recursion_depth = max_recursion_depth
         self.__bias = bias
 
     def trace(self, ray, scene):
+        """Traces a ray through a scene to return the traced color"""
         self.__scene = scene
         return self.__trace_recursively(ray, 0)
 
     def __trace_recursively(self, ray, depth):
+        """Traces a ray through a scene recursively"""
         hit_object, hit_point, hit_normal = self.__intersect(ray)
         if hit_object is None:
             return Vector3(2, 2, 2)  # horizon
@@ -23,6 +28,7 @@ class Tracer:
         return traced_color + hit_object.material.emission_color
 
     def __intersect(self, ray):
+        """Returns the (nearest) intersection of the ray"""
         hit_object = None
         hit_t, hit_point, hit_normal = float("inf"), None, None
         for obj in self.__scene:
@@ -33,6 +39,7 @@ class Tracer:
         return hit_object, hit_point, hit_normal
 
     def __trace_diffuse(self, hit_object, hit_point, hit_normal):
+        """Traces color of an object with diffuse material"""
         summed_color = Vector3()
         for light in filter(lambda obj: obj.is_light, self.__scene):
             transmission = Vector3(1, 1, 1)
@@ -50,6 +57,7 @@ class Tracer:
         return summed_color
 
     def __trace_non_diffuse(self, ray, hit_object, hit_point, hit_normal, depth):
+        """Traces color of an object with refractive/reflective material"""
         inside = ray.direction.dot(hit_normal) > 0
         if inside:
             hit_normal = -hit_normal
@@ -75,4 +83,5 @@ class Tracer:
                 .mul_comp(hit_object.material.surface_color))
 
     def __mix(self, a, b, mix):
+        """Mixes to values by a factor"""
         return b * mix + a * (1 - mix)
