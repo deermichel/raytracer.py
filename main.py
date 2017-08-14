@@ -12,9 +12,9 @@ from renderobject import RenderObject
 from vector3 import Vector3
 
 # render settings
-width = 640
-height = 480
-super_sampling = 1
+width = 300
+height = 200
+super_sampling = 2
 
 # create demo scene
 light_mat = Material(emission_color=Vector3(3, 3, 3))
