@@ -2,15 +2,20 @@ import math
 
 
 class Sphere:
+    """Sphere object"""
+
     def __init__(self, position, radius):
+        """Creates a new sphere"""
         self.__position = position
         self.__radius = radius
 
     @property
     def position(self):
+        """Returns the position of the sphere"""
         return self.__position
 
     def intersect(self, ray):
+        """Returns the intersection of a ray with this sphere"""
         # http://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection
         l = self.__position - ray.origin
         t_ca = l.dot(ray.direction)
