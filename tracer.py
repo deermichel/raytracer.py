@@ -19,7 +19,7 @@ class Tracer:
         """Traces a ray through a scene recursively"""
         hit_object, hit_point, hit_normal = self.__intersect(ray)
         if hit_object is None:
-            return Vector3(2, 2, 2)  # horizon
+            return Vector3(0.3, 0.3, 0.3)  # horizon
         traced_color = Vector3()
         if not hit_object.material.is_diffuse and depth < self.__max_recursion_depth:
             traced_color = self.__trace_non_diffuse(ray, hit_object, hit_point, hit_normal, depth)
@@ -62,7 +62,7 @@ class Tracer:
         if inside:
             hit_normal = -hit_normal
         facing_ratio = -ray.direction.dot(hit_normal)
-        fresnel = self.__mix((1 - facing_ratio) ** 3, 1, 0.1)
+        fresnel = self.__mix((1 - facing_ratio) ** 2, 1, 0.1)
         reflection_ray = Ray(hit_point + self.__bias * hit_normal,
                              ray.direction.reflect(hit_normal).normalize())
         reflection = self.__trace_recursively(reflection_ray, depth + 1)

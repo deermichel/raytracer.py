@@ -8,3 +8,5 @@ use C++ and be fine. Or check out [Minilight](http://www.hxa.name/minilight/) -
 a beautiful GI path tracer (keep in mind: Python won't get faster ^^).
 Nevertheless, if you want to improve sth (e.g. fix the super-sampling)... feel
 free to do so :sweat_smile:.
+
+![Rendered Demo Scene](_demo.png)
